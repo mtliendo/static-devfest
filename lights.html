@@ -14,11 +14,44 @@
       <a href="lights.html">Async Await</a>
     </nav>
     <main>
-      <form>
-        <input type="color" />
-        <button>Submit</button>
-      </form>
+      <img src="images/light-qrcode.png"
+      <section>
+        <label for="color-picker">Select a Color</label>
+        <input id="color-picker" type="color" />
+      </section>
+      <section>
+        <button id="change-color-btn">change color</button>
+      </section>
+      <ul id="lights-list"></ul>
+      <p id="lights-left"></p>
     </main>
-    <script></script>
+    <script>
+      const TOKEN =
+        'c7187174f1d585fa6af84f2379a8386562dd41db7d785be9edd250d8fe7bddc8'
+      const LIGHT_ID = 'd073d559bfdb'
+      const listLightsBtn = document.querySelector('#list-all-lights-btn')
+      const changeColorBtn = document.querySelector('#change-color-btn')
+      const colorPickerInput = document.querySelector('#color-picker')
+
+      changeColorBtn.addEventListener('click', () => {
+        const colorValue = colorPickerInput.value
+        console.log(colorValue)
+        fetch(`https://api.lifx.com/v1/lights/id:${LIGHT_ID}/state`, {
+          method: 'put',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${TOKEN}`,
+          },
+          body: JSON.stringify({
+            color: colorValue,
+          }),
+        })
+          .then((res) => {
+            console.log(res.headers.get('x-ratelimit-remaining'))
+            return res.json()
+          })
+          .then((data) => console.log(data)) // display to user
+      })
+    </script>
   </body>
 </html>
